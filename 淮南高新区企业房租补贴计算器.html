@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>淮南高新区企业房租补贴计算器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #1a3a6c 0%, #2c5aa0 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .calculator {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 25px;
+            margin-top: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #2c5aa0;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+        }
+        
+        .tip {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #1a3a6c 0%, #2c5aa0 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            background: #f8fafd;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid #e3eaf3;
+            display: none;
+        }
+        
+        .result-title {
+            text-align: center;
+            font-size: 20px;
+            color: #1a3a6c;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .result-label {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a3a6c;
+        }
+        
+        .result-unit {
+            font-size: 16px;
+            color: #888;
+            margin-left: 4px;
+        }
+        
+        .total-card {
+            grid-column: span 2;
+            background: linear-gradient(90deg, #1a3a6c 0%, #2c5aa0 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .total-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        .policy-note {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e6a700;
+        }
+        
+        @media (max-width: 600px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .total-card {
+                grid-column: span 1;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>淮南高新区企业房租补贴计算器</h1>
+            <p class="subtitle">适用于双创中心、科技信息产业园、江淮云、智慧谷、万创园、大气环境产业园入驻企业</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="form-group">
+                <label>企业资质类型</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="highTech">
+                        <label for="highTech">高新技术企业</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="scaleAbove">
+                        <label for="scaleAbove">规模以上企业</label>
+                    </div>
+                </div>
+                <p class="tip">提示：同时满足两项资质可叠加享受房租奖励</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="area">租赁面积（平方米）</label>
+                <input type="number" id="area" min="1" placeholder="请输入租赁面积">
+            </div>
+            
+            <div class="form-group">
+                <label for="months">租赁月份</label>
+                <input type="number" id="months" min="1" max="12" placeholder="请输入租赁月份（1-12）">
+                <p class="tip">提示：房租奖励每家企业每年最高不超过50万元</p>
+            </div>
+            
+            <button id="calculateBtn">计算补贴金额</button>
+            
+            <div class="result-container" id="resultContainer">
+                <h3 class="result-title">补贴计算结果</h3>
+                <div class="result-grid">
+                    <div class="result-card">
+                        <div class="result-label">房租奖励</div>
+                        <div class="result-value"><span id="rentReward">0</span><span class="result-unit">元</span></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-label">运营奖励</div>
+                        <div class="result-value"><span id="operationReward">0</span><span class="result-unit">元</span></div>
+                    </div>
+                    
+                    <div class="total-card">
+                        <div class="total-label">年度总奖励金额</div>
+                        <div class="total-value"><span id="totalReward">0</span><span class="result-unit">元</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="policy-note">
+                <div class="note-title">政策说明</div>
+                <p>1. 房租奖励：高新技术企业或规模以上企业按3元/㎡/月标准奖励，同时满足两项资质可叠加享受（6元/㎡/月）</p>
+                <p>2. 运营奖励：按3元/㎡/月标准给予，计算面积为实际承租面积的50%（最高不超过500㎡）</p>
+                <p>3. 房租奖励每家企业每年最高不超过50万元</p>
+                <p>4. 申请时间：每年1月和7月集中申报</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            calculateBtn.addEventListener('click', function() {
+                // 获取用户输入
+                const isHighTech = document.getElementById('highTech').checked;
+                const isScaleAbove = document.getElementById('scaleAbove').checked;
+                const area = parseFloat(document.getElementById('area').value) || 0;
+                const months = parseInt(document.getElementById('months').value) || 0;
+                
+                // 验证输入
+                if (area <= 0 || months <= 0 || months > 12) {
+                    alert('请输入有效的租赁面积和月份（1-12个月）');
+                    return;
+                }
+                
+                if (!isHighTech && !isScaleAbove) {
+                    alert('请至少选择一种企业资质类型');
+                    return;
+                }
+                
+                // 计算房租奖励
+                let rentRate = 0;
+                if (isHighTech) rentRate += 3;
+                if (isScaleAbove) rentRate += 3;
+                
+                let rentReward = rentRate * area * months;
+                
+                // 应用房租奖励上限（每年不超过50万）
+                if (rentReward > 500000) {
+                    rentReward = 500000;
+                }
+                
+                // 计算运营奖励
+                let operationArea = area * 0.5; // 按50%计算
+                if (operationArea > 500) operationArea = 500; // 面积上限500㎡
+                
+                const operationReward = 3 * operationArea * months;
+                
+                // 计算总奖励
+                const totalReward = rentReward + operationReward;
+                
+                // 显示结果
+                document.getElementById('rentReward').textContent = rentReward.toLocaleString();
+                document.getElementById('operationReward').textContent = operationReward.toLocaleString();
+                document.getElementById('totalReward').textContent = totalReward.toLocaleString();
+                
+                resultContainer.style.display = 'block';
+                
+                // 滚动到结果区域
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
